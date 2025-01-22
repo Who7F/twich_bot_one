@@ -1,5 +1,6 @@
 import socket
 import os
+import re
 import requests
 from dotenv import load_dotenv
 
@@ -13,7 +14,7 @@ CHANNEL_NAME = os.getenv("CHANNEL_NAME")
 # Validate the Access Token
 def validate_token():
     headers = {
-        'Authorization': f'Bearer {ACCESS_TOKEN[6:]}',
+        'Authorization': F'Bearer {ACCESS_TOKEN[6:]}',
         'Client-Id': CLIENT_ID,
     }
     response = requests.get('https://id.twitch.tv/oauth2/validate', headers=headers)
@@ -21,17 +22,16 @@ def validate_token():
     if response.status_code == 200:
         print("Token is valid.")
         data = response.json()
-        print(f"Bot Username: {data['login']}")
-        print(f"Scopes: {data['scopes']}")
+        print(F"Bot Username: {data['login']}")
+        print(F"Scopes: {data['scopes']}")
         return True
     else:
         print("Token validation failed.")
         print(response.json())
-        print(ACCESS_TOKEN)
         return False
 
 def send_message(irc, channel, message):
-    irc.send(f"PRIVMSG #{channel} :{message}\n".encode('utf-8'))
+    irc.send(F"PRIVMSG #{channel} :{message}\n".encode('utf-8'))
 
 
 def route_command(username, command, args):
@@ -40,26 +40,50 @@ def route_command(username, command, args):
 def listener(irc, CHANNEL_NAME, message, live):
     if "PRIVMSG" in message:
         parts = message.split(":", 2)
-        kill_users = {"intoxic_hate", BOT_USERNAME}
+        
+        #Allows self termination and channel owner termination
+        kill_users = {BOT_USERNAME, CHANNEL_NAME}
+        
         if len(parts) > 2:
             username = parts[1].split("!")[0]
             chat_message = parts[2].strip()
-            if chat_message.startswith(f"@{BOT_USERNAME} KILL"):
-                print(username)
+            print (F"Message Received:: {username}: {chat_message}")
+        
+            #chatmessage made lowercase for easier parsing
+            chat_message = chat_message.lower()
+
+            # Kill Command
+            if chat_message.startswith(F"terminate @{BOT_USERNAME}"):
+                print(F"Username attempted Termination")
                 if username in kill_users:
                     live = False
-            chat_message = chat_message.lower()
+                    print(F"Termination Successful")
             
-            if chat_message.startswith(f"hello @{BOT_USERNAME}"):
-                send_message(irc, CHANNEL_NAME, f'@{username} I am not a bot')
+            #Auto Greeting
+            if chat_message.__contains__(F"hi @{BOT_USERNAME} "):
+                send_message(irc, CHANNEL_NAME, F'Greeting received! Salutations @{username}!')
+                print(F"AutoGreeting Successful")
+                        
+            # Auto Shoutout with Hug
+            if chat_message.__contains__(" just raided the channel with "):
+                # todo: extract raidername from chat_message
+                raidername = re.search(r'@(\w+)', chat_message).group(1)
+                send_message(irc, CHANNEL_NAME, F'!so @{raidername}')
+                print(F"Auto Shoutout Successful")
+                wait = 1000
+                send_message(irc, CHANNEL_NAME, F'!hug @{raidername}')
+                print(F"AutoHug Successful")
             
-            if chat_message.startswith("!"):
-                print("!")
-                split_message  = chat_message.split(" ")
-                command = split_message[0]
-                args = split_message[1:]
-                response = route_command(username, command, args)
-                send_message(irc, CHANNEL_NAME, f'@{username} hello hotstuff')
+            # Augmented response to !Fish command on Bennetron's channel
+            if chat_message.startswith("!fish") and CHANNEL_NAME == "bennetron":
+                wait = 1000
+                send_message(irc, CHANNEL_NAME, 'Enjoy your meal')
+                print(F"AutoFishComplete Successful")
+            
+            #Auto Hug Back
+            if chat_message.__contains__(F"!hug @{BOT_USERNAME}") and username != BOT_USERNAME:
+                send_message(irc, CHANNEL_NAME, F'!hug @{username}')
+                print(F"AutoHugBack Successful")
     return(live)
         
 
@@ -69,14 +93,14 @@ def connect_to_twitch_chat():
 
     irc = socket.socket()
     irc.connect((SERVER, PORT))
-    irc.send(f"PASS {ACCESS_TOKEN}\n".encode('utf-8')) #to be changed
-    irc.send(f"NICK {BOT_USERNAME}\n".encode('utf-8'))
-    irc.send(f"JOIN #{CHANNEL_NAME}\n".encode('utf-8'))
+    irc.send(F"PASS {ACCESS_TOKEN}\n".encode('utf-8')) #to be changed
+    irc.send(F"NICK {BOT_USERNAME}\n".encode('utf-8'))
+    irc.send(F"JOIN #{CHANNEL_NAME}\n".encode('utf-8'))
 
-    print(f"Connected to {CHANNEL_NAME}'s chat as {BOT_USERNAME}")
+    print(F"Connected to {CHANNEL_NAME}'s chat as {BOT_USERNAME}")
     live = True
 
-    bot_message = "maize_13 is now a bot!"
+    bot_message = F"{BOT_USERNAME} is now augmented!"
     send_message(irc, CHANNEL_NAME, bot_message)
 
     while True:
@@ -85,9 +109,8 @@ def connect_to_twitch_chat():
             irc.send("PONG :tmi.twitch.tv\n".encode('utf-8'))
         else:
             live = listener(irc, CHANNEL_NAME, message, live)
-            print(live)
             if live == False:
-                send_message(irc, CHANNEL_NAME, f'Time for Tubbie Bye Bye')
+                send_message(irc, CHANNEL_NAME, F'Augmentation Terminated. Shutting down.')
                 break
 
 def main():
