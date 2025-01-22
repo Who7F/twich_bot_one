@@ -87,7 +87,7 @@ def connect_to_twitch_chat():
             live = listener(irc, CHANNEL_NAME, message, live)
             print(live)
             if live == False:
-                send_message(irc, CHANNEL_NAME, f'time for tubbie bye bye')
+                send_message(irc, CHANNEL_NAME, f'Time for Tubbie Bye Bye')
                 break
 
 def main():
