@@ -1,8 +1,8 @@
 import socket
 import os
-import re
 import requests
 from dotenv import load_dotenv
+from time import sleep
 
 load_dotenv()
 
@@ -43,13 +43,14 @@ def listener(irc, CHANNEL_NAME, message, live):
         
         #Allows self termination and channel owner termination
         kill_users = {BOT_USERNAME, CHANNEL_NAME}
+        fartwords = {'gas', 'fart', 'toot', 'poot','flatulence','cheek', 'smell', 'stink', 'stank', 'stunk', 'pungent', 'aroma', 'odor', 'odour', 'whiff', 'reek', 'fume', 'vapor', 'vapour', 'stench', 'reek', 'miasma', 'malodor', 'malodour', 'fetid'}
         
         if len(parts) > 2:
             username = parts[1].split("!")[0]
             chat_message = parts[2].strip()
             print (F"Message Received:: {username}: {chat_message}")
         
-            #chatmessage made lowercase for easier parsing
+            # chatmessage made lowercase for easier parsing
             chat_message = chat_message.lower()
 
             # Kill Command
@@ -59,31 +60,40 @@ def listener(irc, CHANNEL_NAME, message, live):
                     live = False
                     print(F"Termination Successful")
             
-            #Auto Greeting
-            if chat_message.__contains__(F"hi @{BOT_USERNAME} "):
+            # Auto Greeting
+            if chat_message.__contains__(F"hi @{BOT_USERNAME}"):
                 send_message(irc, CHANNEL_NAME, F'Greeting received! Salutations @{username}!')
                 print(F"AutoGreeting Successful")
                         
             # Auto Shoutout with Hug
-            if chat_message.__contains__(" just raided the channel with "):
+            # todo build proper validation for mod status and !so presence/command
+            if chat_message.__contains__(" just raided the channel with ") and CHANNEL_NAME == "bennettron":
                 # todo: extract raidername from chat_message
-                raidername = re.search(r'@(\w+)', chat_message).group(1)
+                raidername = chat_message.split()[0]
                 send_message(irc, CHANNEL_NAME, F'!so @{raidername}')
                 print(F"Auto Shoutout Successful")
-                wait = 1000
+                sleep(1)  # Time in seconds
                 send_message(irc, CHANNEL_NAME, F'!hug @{raidername}')
                 print(F"AutoHug Successful")
             
             # Augmented response to !Fish command on Bennetron's channel
-            if chat_message.startswith("!fish") and CHANNEL_NAME == "bennetron":
-                wait = 1000
+            if chat_message.startswith("!fish") and CHANNEL_NAME == "bennettron":
+                sleep(1)  # Time in seconds
                 send_message(irc, CHANNEL_NAME, 'Enjoy your meal')
+                send_message(irc, CHANNEL_NAME, "<º)))>{ <>< <>< <>< <>< <><")
                 print(F"AutoFishComplete Successful")
             
-            #Auto Hug Back
+            # Auto Hug Back
+            # Added and condition to avoid self looping
             if chat_message.__contains__(F"!hug @{BOT_USERNAME}") and username != BOT_USERNAME:
+                wait = 4000
                 send_message(irc, CHANNEL_NAME, F'!hug @{username}')
                 print(F"AutoHugBack Successful")
+
+            # Auto Fart
+            if any(i in chat_message for i in fartwords) and BOT_USERNAME == "intoxic_hate":
+                send_message(irc, CHANNEL_NAME, F'/me Lets Freedom Break with a Tox Bum Blast!')
+                print(F"AutoFart Successful")
     return(live)
         
 
