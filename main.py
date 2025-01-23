@@ -105,8 +105,7 @@ def listener(irc, CHANNEL_NAME, message, live):
                     send_message(irc, CHANNEL_NAME, F'/timeout @{username} 5')
                     print(F"Assessment: Threat Neutralised")
                     #TODO build a memory of past assailants to escalate timeouts by username
-    return(live)
-        
+    return(live)        
 
 def connect_to_twitch_chat():
     SERVER = "irc.chat.twitch.tv"
