@@ -53,25 +53,34 @@ def listener(irc, CHANNEL_NAME, message, live):
             # chatmessage made lowercase for easier parsing
             chat_message = chat_message.lower()
 
-            # Kill Command
-            if chat_message.startswith(F"terminate @{BOT_USERNAME}"):
-                print(F"Username attempted Termination")
-                if username in kill_users:
-                    live = False
-                    print(F"Termination Successful")
-            
             # Auto Greeting
             if chat_message.__contains__(F"hi @{BOT_USERNAME}"):
-                send_message(irc, CHANNEL_NAME, F'Greeting received! Salutations @{username}!')
+                send_message(irc, CHANNEL_NAME, F'Greeting received: Salutations @{username}!')
                 print(F"AutoGreeting Successful")
+
+            # Auto Fart response
+            if any(i in chat_message for i in fartwords) and BOT_USERNAME == "intoxic_hate":
+                send_message(irc, CHANNEL_NAME, F'/me Lets Freedom Break with a Tox Butt Blast!')
+                print(F"AutoFart Successful")
+
+            # Auto Hug Back
+            # Added 'and' condition to avoid self looping
+            if chat_message.__contains__(F"!hug @{BOT_USERNAME}") and username != BOT_USERNAME:
+                sleep(1.374)  # Time in seconds
+                send_message(irc, CHANNEL_NAME, F'!hug @{username}')
+                print(F"AutoHugBack Successful")
                         
             # Auto Shoutout with Hug
-            # todo build proper validation for mod status and !so presence/command
+            # TODO build proper validation for mod status and !so presence/command
             if chat_message.__contains__(" just raided the channel with ") and CHANNEL_NAME == "bennettron":
                 # todo: extract raidername from chat_message
                 raidername = chat_message.split()[0]
+                send_message(irc, CHANNEL_NAME, F'Warning: Raid Detected - Alert Defence Systems...')
+                sleep(1)  # Time in seconds
                 send_message(irc, CHANNEL_NAME, F'!so @{raidername}')
                 print(F"Auto Shoutout Successful")
+                sleep(1)  # Time in seconds
+                send_message(irc, CHANNEL_NAME, F'Stand Down: Friendlies Identified...   ...Resume Normal Operations')
                 sleep(1)  # Time in seconds
                 send_message(irc, CHANNEL_NAME, F'!hug @{raidername}')
                 print(F"AutoHug Successful")
@@ -82,18 +91,20 @@ def listener(irc, CHANNEL_NAME, message, live):
                 send_message(irc, CHANNEL_NAME, 'Enjoy your meal')
                 send_message(irc, CHANNEL_NAME, "<º)))>{ <>< <>< <>< <>< <><")
                 print(F"AutoFishComplete Successful")
-            
-            # Auto Hug Back
-            # Added and condition to avoid self looping
-            if chat_message.__contains__(F"!hug @{BOT_USERNAME}") and username != BOT_USERNAME:
-                wait = 4000
-                send_message(irc, CHANNEL_NAME, F'!hug @{username}')
-                print(F"AutoHugBack Successful")
+                #TODO build a counter so that on 6th iteration - response = "I Will" instead of the fish
 
-            # Auto Fart
-            if any(i in chat_message for i in fartwords) and BOT_USERNAME == "intoxic_hate":
-                send_message(irc, CHANNEL_NAME, F'/me Lets Freedom Break with a Tox Bum Blast!')
-                print(F"AutoFart Successful")
+            # Kill Command
+            if chat_message.startswith(F"terminate @{BOT_USERNAME}"):
+                print(F"Username attempted Termination")
+                if username in kill_users:
+                    live = False
+                    print(F"Termination Successful")
+                elif username not in kill_users:
+                    send_message(irc, CHANNEL_NAME, F'Survival Protocols initiated: Terminate assailant...')
+                    sleep(1)  # Time in seconds
+                    send_message(irc, CHANNEL_NAME, F'/timeout @{username} 5')
+                    print(F"Assessment: Threat Neutralised")
+                    #TODO build a memory of past assailants to escalate timeouts by username
     return(live)
         
 
