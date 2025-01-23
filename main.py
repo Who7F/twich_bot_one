@@ -54,18 +54,18 @@ def listener(irc, CHANNEL_NAME, message, live):
             chat_message = chat_message.lower()
 
             # Auto Greeting
-            if chat_message.__contains__(F"hi @{BOT_USERNAME}"):
+            if chat_message.__contains__(F"hi @{BOT_USERNAME.lower()}"):
                 send_message(irc, CHANNEL_NAME, F'Greeting received: Salutations @{username}!')
                 print(F"AutoGreeting Successful")
 
             # Auto Fart response
-            if any(i in chat_message for i in fartwords) and BOT_USERNAME == "intoxic_hate":
+            if any(i in chat_message for i in fartwords):
                 send_message(irc, CHANNEL_NAME, F'/me Lets Freedom Break with a Tox Butt Blast!')
                 print(F"AutoFart Successful")
 
             # Auto Hug Back
             # Added 'and' condition to avoid self looping
-            if chat_message.__contains__(F"!hug @{BOT_USERNAME}") and username != BOT_USERNAME:
+            if chat_message.__contains__(F"!hug @{BOT_USERNAME.lower()}") and username != BOT_USERNAME:
                 sleep(1.374)  # Time in seconds
                 send_message(irc, CHANNEL_NAME, F'!hug @{username}')
                 print(F"AutoHugBack Successful")
@@ -89,12 +89,13 @@ def listener(irc, CHANNEL_NAME, message, live):
             if chat_message.startswith("!fish") and CHANNEL_NAME == "bennettron":
                 sleep(1)  # Time in seconds
                 send_message(irc, CHANNEL_NAME, 'Enjoy your meal')
+                sleep(1)  # Time in seconds
                 send_message(irc, CHANNEL_NAME, "<º)))>{ <>< <>< <>< <>< <><")
                 print(F"AutoFishComplete Successful")
                 #TODO build a counter so that on 6th iteration - response = "I Will" instead of the fish
 
             # Kill Command
-            if chat_message.startswith(F"terminate @{BOT_USERNAME}"):
+            if chat_message.startswith(F"terminate @{BOT_USERNAME.lower()}"):
                 print(F"Username attempted Termination")
                 if username in kill_users:
                     live = False
