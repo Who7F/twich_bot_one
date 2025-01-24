@@ -1,23 +1,32 @@
-import socket
+""" Main Module for the Twitch Chat Bot"""
+#-----------------------------------------------------------
+#
+# PLEASE NOTE THAT THIS FILE IS REDACTED PLEASE USE src.main.py FOR THE CURRENT APPLICATION
+#
+#-----------------------------------------------------------
+
+
 import os
+import socket
+from time import sleep
+
 import requests
 from dotenv import load_dotenv
-from time import sleep
 
 load_dotenv()
 
-ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")  
-CLIENT_ID = os.getenv("CLIENT_ID")        
-BOT_USERNAME = os.getenv("BOT_USERNAME")  
-CHANNEL_NAME = os.getenv("CHANNEL_NAME")  
+ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
+CLIENT_ID = os.getenv("CLIENT_ID")
+BOT_USERNAME = os.getenv("BOT_USERNAME")
+CHANNEL_NAME = os.getenv("CHANNEL_NAME")
 
-# Validate the Access Token
 def validate_token():
+    """This function validates the access token"""
     headers = {
         'Authorization': F'Bearer {ACCESS_TOKEN[6:]}',
         'Client-Id': CLIENT_ID,
     }
-    response = requests.get('https://id.twitch.tv/oauth2/validate', headers=headers)
+    response = requests.get('https://id.twitch.tv/oauth2/validate', headers=headers, timeout=10)
 
     if response.status_code == 200:
         print("Token is valid.")
@@ -31,84 +40,92 @@ def validate_token():
         return False
 
 def send_message(irc, channel, message):
+    """This function sends a message to the chat"""
     irc.send(F"PRIVMSG #{channel} :{message}\n".encode('utf-8'))
 
 
 def route_command(username, command, args):
+    """This function routes the command to the appropriate function"""
+    # TODO: Implement the routing logic
     return "pass"
 
 def listener(irc, CHANNEL_NAME, message, live):
+    """This function listens to the chat and responds to messages"""
     if "PRIVMSG" in message:
         parts = message.split(":", 2)
-        
+
         #Allows self termination and channel owner termination
         kill_users = {BOT_USERNAME, CHANNEL_NAME}
-        fartwords = {'gas', 'fart', 'toot', 'poot','flatulence','cheek', 'smell', 'stink', 'stank', 'stunk', 'pungent', 'aroma', 'odor', 'odour', 'whiff', 'reek', 'fume', 'vapor', 'vapour', 'stench', 'reek', 'miasma', 'malodor', 'malodour', 'fetid'}
-        
+        fartwords = {'gas', 'fart', 'toot', 'poot','flatulence','cheek', 'smell', 'stink', 'stank',
+            'stunk', 'pungent', 'aroma', 'odor', 'odour', 'whiff', 'reek', 'fume', 'vapor',
+            'vapour', 'stench', 'miasma', 'malodor', 'malodour', 'fetid'}
+
         if len(parts) > 2:
             username = parts[1].split("!")[0]
             chat_message = parts[2].strip()
             print (F"Message Received:: {username}: {chat_message}")
-        
+
             # chatmessage made lowercase for easier parsing
             chat_message = chat_message.lower()
 
             # Auto Greeting
-            if chat_message.__contains__(F"hi @{BOT_USERNAME.lower()}"):
+            if F"hi @{BOT_USERNAME.lower()}" in chat_message:
                 send_message(irc, CHANNEL_NAME, F'Greeting received: Salutations @{username}!')
-                print(F"AutoGreeting Successful")
+                print("AutoGreeting Successful")
 
             # Auto Fart response
             if any(i in chat_message for i in fartwords):
-                send_message(irc, CHANNEL_NAME, F'/me Lets Freedom Break with a Tox Butt Blast!')
-                print(F"AutoFart Successful")
+                send_message(irc, CHANNEL_NAME, '/me Lets Freedom Break with a Tox Butt Blast!')
+                print("AutoFart Successful")
 
             # Auto Hug Back
             # Added 'and' condition to avoid self looping
-            if chat_message.__contains__(F"!hug @{BOT_USERNAME.lower()}") and username != BOT_USERNAME:
+            if F"!hug @{BOT_USERNAME.lower()}" in chat_message and username != BOT_USERNAME:
                 sleep(1.374)  # Time in seconds
                 send_message(irc, CHANNEL_NAME, F'!hug @{username}')
-                print(F"AutoHugBack Successful")
-                        
+                print("AutoHugBack Successful")
+
             # Auto Shoutout with Hug
             # TODO build proper validation for mod status and !so presence/command
-            if chat_message.__contains__(" just raided the channel with ") and CHANNEL_NAME == "bennettron":
-                # todo: extract raidername from chat_message
+            if " just raided the channel with " in chat_message and CHANNEL_NAME == "bennettron":
                 raidername = chat_message.split()[0]
-                send_message(irc, CHANNEL_NAME, F'Warning: Raid Detected - Alert Defence Systems...')
+                message_out = 'Warning: Raid Detected - Alert Defence Systems...'
+                send_message(irc, CHANNEL_NAME, message_out)
                 sleep(1)  # Time in seconds
                 send_message(irc, CHANNEL_NAME, F'!so @{raidername}')
-                print(F"Auto Shoutout Successful")
+                print("Auto Shoutout Successful")
                 sleep(1)  # Time in seconds
-                send_message(irc, CHANNEL_NAME, F'Stand Down: Friendlies Identified...   ...Resume Normal Operations')
+                message_out = 'Stand Down: Friendlies Identified... ...Resume Normal Operations'
+                send_message(irc, CHANNEL_NAME, message_out)
                 sleep(1)  # Time in seconds
                 send_message(irc, CHANNEL_NAME, F'!hug @{raidername}')
-                print(F"AutoHug Successful")
-            
+                print("AutoHug Successful")
+
             # Augmented response to !Fish command on Bennetron's channel
             if chat_message.startswith("!fish") and CHANNEL_NAME == "bennettron":
                 sleep(1)  # Time in seconds
                 send_message(irc, CHANNEL_NAME, 'Enjoy your meal')
                 sleep(1)  # Time in seconds
                 send_message(irc, CHANNEL_NAME, "<º)))>{ <>< <>< <>< <>< <><")
-                print(F"AutoFishComplete Successful")
-                #TODO build a counter so that on 6th iteration - response = "I Will" instead of the fish
+                print("AutoFishComplete Successful")
+                #TODO build a counter so that on 6th iteration response is "I Will"
 
             # Kill Command
             if chat_message.startswith(F"terminate @{BOT_USERNAME.lower()}"):
-                print(F"Username attempted Termination")
+                print("Username attempted Termination")
                 if username in kill_users:
                     live = False
-                    print(F"Termination Successful")
+                    print("Termination Successful")
                 elif username not in kill_users:
-                    send_message(irc, CHANNEL_NAME, F'Survival Protocols initiated: Terminate assailant...')
+                    send_message(irc, CHANNEL_NAME, 'Survival Protocols=True: Terminate assailant.')
                     sleep(1)  # Time in seconds
                     send_message(irc, CHANNEL_NAME, F'/timeout @{username} 5')
-                    print(F"Assessment: Threat Neutralised")
+                    print("Assessment: Threat Neutralised")
                     #TODO build a memory of past assailants to escalate timeouts by username
-    return(live)        
+    return live
 
 def connect_to_twitch_chat():
+    """This function connects to the Twitch chat"""
     SERVER = "irc.chat.twitch.tv"
     PORT = 6667
 
@@ -130,11 +147,12 @@ def connect_to_twitch_chat():
             irc.send("PONG :tmi.twitch.tv\n".encode('utf-8'))
         else:
             live = listener(irc, CHANNEL_NAME, message, live)
-            if live == False:
-                send_message(irc, CHANNEL_NAME, F'Augmentation Terminated. Shutting down.')
+            if live is False:
+                send_message(irc, CHANNEL_NAME, 'Augmentation Terminated. Shutting down.')
                 break
 
 def main():
+    """This is the main function"""
     if validate_token():
         connect_to_twitch_chat()
     else:
