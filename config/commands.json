@@ -1,0 +1,19 @@
+{
+	"botCommands": {
+		"start_bot": "{BOT_USERNAME} is now a bot!",
+		"stop_bot": "Time for Tubbie Bye Bye"
+	},
+	"chatCommands": {
+		"!biteme": {
+			"response": "bite my shiny metal ass",
+			"aliases": ["!bite"]
+		},
+		"!bots": {
+			"response": "{BOT_USERNAME} IS not a bot"
+		},
+		"!cake": {
+			"response": "@{username} The cake is a lie",
+			"access_level": "all"
+		}
+	}
+}

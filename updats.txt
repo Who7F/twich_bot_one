@@ -1,0 +1,7 @@
+removed redunted files
+confige commands add.
+File structure fished.
+root/main removed.
+There has been a change to env template. ACCESS_TOKEN no longer needs oauth: at the start. I will still work with it for now
+There is a second main() in the src folder. Please launch form src/main()
+File structure started. Still no configs.
