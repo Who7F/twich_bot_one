@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from bot import connect_twitch_chat, manage_chat_connection
 
 
-# Todo. Move to Utils.py. Path will change to ../../config/filename
+# Todo. Move to utility_functions.py. Path will change to ../../config/filename
 def load_commands(filepath):
     """Load the commands from the file."""
     with open(filepath, "r", encoding="utf-8") as file:

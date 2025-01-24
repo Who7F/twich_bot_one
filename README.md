@@ -10,12 +10,8 @@ Instructions on how to install and set up the project.
 2. Install Python   
 3. Install dependencies
    ```
-   pip install requests
-   pip install python-dotenv
-   pip install pytest
-   pip install pytest-mock
+   pip install -r requirements.txt
    ```
-   todo - make this  use `-r requirements.txt`
 4. Configure your environment using template.env (copy and rename to .env)
    
 
@@ -23,7 +19,7 @@ Instructions on how to install and set up the project.
 
 Instructions on how to use the project.
 
-```
 run
-python main.py
+```
+python src/main.py
 ```
