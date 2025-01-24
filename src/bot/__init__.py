@@ -1,5 +1,4 @@
-from .ValidateToken import validateToken
-from .ConnectTwitchChat import connectTwitchChat
-from .Listener import listener
+from .ConnectTwitch import connectTwitchChat
+from .ManageChat import manageChatConnection
 
-__all__ = ["validateToken", "connectTwitchChat", "listener"]
+__all__ = ["connectTwitchChat", "manageChatConnection"]

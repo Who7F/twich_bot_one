@@ -1,35 +1,20 @@
 import os
+import json
 from dotenv import load_dotenv
-from bot import validateToken, connectTwitchChat, listener
-
-def send_message(irc, channel, message):
-    irc.send(f"PRIVMSG #{channel} :{message}\n".encode('utf-8'))
+from bot import connectTwitchChat, manageChatConnection
 
 
-def route_command(username, command, args):
-    return "pass"
+# Todo. Move to Utils.py. Path will change to ../../config/filename
+def loadCommands(filepath):
+    with open(filepath, "r") as file:
+        return json.load(file)
 
-def connect(irc, BOT_USERNAME, CHANNEL_NAME):
-    
-    print(f"Connected to {CHANNEL_NAME}'s chat as {BOT_USERNAME}")
-    
-    bot_message = "maize_13 is now a bot!"
-    send_message(irc, CHANNEL_NAME, bot_message)
-
-    while True:
-        message = irc.recv(2048).decode('utf-8')
-        if message.startswith("PING"):
-            irc.send("PONG :tmi.twitch.tv\n".encode('utf-8'))
-        else:
-            live = listener(irc, CHANNEL_NAME, BOT_USERNAME, message)
-
-            if live == False:
-                send_message(irc, CHANNEL_NAME, f'Time for Tubbie Bye Bye')
-                break
 
 def main():
     load_dotenv()
-
+    file_name = "../config/commands.json"
+    commands = loadCommands(file_name)
+        
     ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")  
     CLIENT_ID = os.getenv("CLIENT_ID")        
     BOT_USERNAME = os.getenv("BOT_USERNAME")  
@@ -40,11 +25,14 @@ def main():
         ACCESS_TOKEN = ACCESS_TOKEN[6:]
         print(f"remove oauth: form ACCESS_TOKEN")
         
-    if validateToken(ACCESS_TOKEN, CLIENT_ID):
-        irc = connectTwitchChat(ACCESS_TOKEN, BOT_USERNAME, CHANNEL_NAME)
-        connect(irc, BOT_USERNAME, CHANNEL_NAME)
+    
+    irc = connectTwitchChat(ACCESS_TOKEN, CLIENT_ID, BOT_USERNAME, CHANNEL_NAME)
+    if irc:
+        manageChatConnection(irc, BOT_USERNAME, CHANNEL_NAME, commands)
     else:
-        print("Failed to validate token. Exiting.")
+        print("Failed Relay Chat. Exiting.")
+    print("END")
+    
 
 if __name__ == "__main__":
     main()
