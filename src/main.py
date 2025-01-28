@@ -1,7 +1,7 @@
 import os
 import json
 from dotenv import load_dotenv
-from bot import connectTwitchChat, manageChatConnection
+from bot import connect_twitch_chat, manage_chat_connection
 
 
 # Todo. Move to Utils.py. Path will change to ../../config/filename
@@ -26,9 +26,9 @@ def main():
         print(f"remove oauth: form ACCESS_TOKEN")
         
     
-    irc = connectTwitchChat(ACCESS_TOKEN, CLIENT_ID, BOT_USERNAME, CHANNEL_NAME)
+    irc = connect_twitch_chat(ACCESS_TOKEN, CLIENT_ID, BOT_USERNAME, CHANNEL_NAME)
     if irc:
-        manageChatConnection(irc, BOT_USERNAME, CHANNEL_NAME, commands)
+        manage_chat_connection(irc, BOT_USERNAME, CHANNEL_NAME, commands)
     else:
         print("Failed Relay Chat. Exiting.")
     print("END")

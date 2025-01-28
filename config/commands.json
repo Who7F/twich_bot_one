@@ -1,6 +1,6 @@
 {
 	"botCommands": {
-		"start_bot": "{BOT_USERNAME} is now a bot!",
+		"start_bot": "{bot_username} is now a bot!",
 		"stop_bot": "Time for Tubbie Bye Bye"
 	},
 	"chatCommands": {
@@ -9,7 +9,7 @@
 			"aliases": ["!bite"]
 		},
 		"!bots": {
-			"response": "{BOT_USERNAME} IS not a bot"
+			"response": "{bot_username} IS not a bot"
 		},
 		"!cake": {
 			"response": "@{username} The cake is a lie",
