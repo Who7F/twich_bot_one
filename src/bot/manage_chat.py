@@ -1,6 +1,6 @@
 """This module is responsible for managing the chat connection and handling the messages."""
-from bot.utility_functions import send_message
-from bot.listener import listener
+from .utility_functions import send_message
+from .listener import listener
 
 
 def handle_ping(irc, massage):

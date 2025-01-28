@@ -69,19 +69,6 @@ def listener(irc, CHANNEL_NAME, message, live):
             chat_message = chat_message.lower()
 
             # Auto Greeting
-            if F"hi @{BOT_USERNAME.lower()}" in chat_message:
-                send_message(irc, CHANNEL_NAME, F'Greeting received: Salutations @{username}!')
-                print("AutoGreeting Successful")
-
-            # Auto Fart response
-            if any(i in chat_message for i in fartwords):
-                send_message(irc, CHANNEL_NAME, '/me Lets Freedom Break with a Tox Butt Blast!')
-                print("AutoFart Successful")
-
-            # Auto Hug Back
-            # Added 'and' condition to avoid self looping
-            if F"!hug @{BOT_USERNAME.lower()}" in chat_message and username != BOT_USERNAME:
-                sleep(1.374)  # Time in seconds
                 send_message(irc, CHANNEL_NAME, F'!hug @{username}')
                 print("AutoHugBack Successful")
 
@@ -125,6 +112,19 @@ def listener(irc, CHANNEL_NAME, message, live):
     return live
 
 def connect_to_twitch_chat():
+            if F"hi @{BOT_USERNAME.lower()}" in chat_message:
+                send_message(irc, CHANNEL_NAME, F'Greeting received: Salutations @{username}!')
+                print("AutoGreeting Successful")
+
+            # Auto Fart response
+            if any(i in chat_message for i in fartwords):
+                send_message(irc, CHANNEL_NAME, '/me Lets Freedom Break with a Tox Butt Blast!')
+                print("AutoFart Successful")
+
+            # Auto Hug Back
+            # Added 'and' condition to avoid self looping
+            if F"!hug @{BOT_USERNAME.lower()}" in chat_message and username != BOT_USERNAME:
+                sleep(1.374)  # Time in seconds
     """This function connects to the Twitch chat"""
     SERVER = "irc.chat.twitch.tv"
     PORT = 6667

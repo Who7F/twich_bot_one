@@ -2,10 +2,10 @@
 import os
 import json
 from dotenv import load_dotenv
-from bot import connect_twitch_chat, manage_chat_connection
+from .bot import connect_twitch_chat, manage_chat_connection
 
 
-# Todo. Move to utility_functions.py. Path will change to ../../config/filename
+# TODO. Move to utility_functions.py. Path will change to ../../config/filename
 def load_commands(filepath):
     """Load the commands from the file."""
     with open(filepath, "r", encoding="utf-8") as file:
@@ -23,16 +23,11 @@ def main():
     bot_username = os.getenv("BOT_USERNAME")
     channel_name = os.getenv("CHANNEL_NAME")
 
-    # TODO. Remove when everyone as updated there Access token
-    if access_token.startswith("oauth:"):
-        access_token = access_token[6:]
-        print("remove oauth: form ACCESS_TOKEN")
-
-
     irc = connect_twitch_chat(access_token, client_id, bot_username, channel_name)
     if irc:
         manage_chat_connection(irc, bot_username, channel_name, commands)
     else:
+        # TODO. Add Exception handling
         print("Failed Relay Chat. Exiting.")
     print("END")
 
