@@ -2,7 +2,7 @@
 import os
 import json
 from dotenv import load_dotenv
-from .bot import connect_twitch_chat, manage_chat_connection
+from bot import connect_twitch_chat, manage_chat_connection
 
 
 # TODO. Move to utility_functions.py. Path will change to ../../config/filename

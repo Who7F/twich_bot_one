@@ -3,11 +3,13 @@
 import os
 import sys
 import pytest
+from pathlib import Path
 
 from dotenv import load_dotenv
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+#sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+#sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(str(Path(__file__).resolve().parent.parent / "src"))
 
 # Load the environment variables from the test.env file
 def pytest_configure(config):
@@ -26,12 +28,12 @@ def pytest_configure(config):
 
 @pytest.fixture
 def mock_load_commands(mocker):
-    return mocker.patch("src.main.load_commands", return_value={"!command": "response"})
+    return mocker.patch("main.load_commands", return_value={"!command": "response"})
 
 @pytest.fixture
 def mock_connect_twitch_chat(mocker):
-    return mocker.patch("src.main.connect_twitch_chat", return_value=True)
+    return mocker.patch("main.connect_twitch_chat", return_value=True)
 
 @pytest.fixture
 def mock_manage_chat_connection(mocker):
-    return mocker.patch("src.main.manage_chat_connection")
+    return mocker.patch("main.manage_chat_connection")

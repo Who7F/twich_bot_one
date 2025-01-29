@@ -1,7 +1,7 @@
 """ This Test Module Tests the functions in the main.py file """
 import json
 import pytest
-from src.main import main, load_commands
+from main import main, load_commands
 
 
 def test_load_commands(tmp_path):
