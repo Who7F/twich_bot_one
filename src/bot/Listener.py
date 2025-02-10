@@ -1,6 +1,10 @@
 """This module contains the listener function that listens and responds to the chat commands."""
-
+import asyncio
 from .utility_functions import send_message
+
+async def delayed_response(irc, channel_name, response, delay):
+    await ssyncio.sleep(delay)
+    send_message(irc, channel_name, response)
 
 
 def make_response(irc, username, channel_name, bot_username, command, commands):
@@ -10,7 +14,10 @@ def make_response(irc, username, channel_name, bot_username, command, commands):
             response = data["response"].replace("{BOT_USERNAME}", bot_username)
             response = data["response"].replace("{username}", username)
 
-            send_message(irc, channel_name, response)
+            if data["sleeptime"]:
+                asyncio.create_task(delayed_response(irc, channel_name, response, data["sleeptime"]))
+            else:
+                send_message(irc, channel_name, response)
 
 
 def listener(irc, channel_name, bot_username, message, commands):
