@@ -14,6 +14,16 @@
 		"!cake": {
 			"response": "@{username} The cake is a lie",
 			"access_level": "all"
+		},
+		"!up, up, down, down, left, right, left, right, b, a, start":{
+			"response": "KONAMI code activated. the username bot has been upgraded. Added to scoop WORLD DOMINATION",
+			"aliases": ["!up, up, down, down, left, right, left, right, b, a and start"],
+			"sleeptime": 2
+		},
+		"!rolly poly":{
+			"response": "We are born of rolly poly, made men by the rolly poly, undone by the rolly poly, fear the old rolly poly",
+			"aliases": ["!roll"],
+			"sleeptime": 2
 		}
 	}
 }
