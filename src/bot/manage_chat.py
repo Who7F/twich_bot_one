@@ -26,5 +26,5 @@ def manage_chat_connection(irc, bot_username, channel_name, commands):
             stay_alive = listener(irc, channel_name, bot_username, message, commands)
 
             if not stay_alive:
-                send_message(irc, channel_name, end_bot)
+                send_message(irc, channel_name, stop_bot)
                 break

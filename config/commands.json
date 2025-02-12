@@ -14,6 +14,11 @@
 		"!cake": {
 			"response": "@{username} The cake is a lie",
 			"access_level": "all"
+		},
+		"!up, up, down, down, left, right, left, right, b, a, start":{
+			"response": "KONAMI code activated. the username bot has been upgraded. Added to scoop WORLD DOMINATION",
+			"aliases": ["!up, up, down, down, left, right, left, right, b, a and start"],
+			"sleeptime": 2
 		}
 	}
 }
