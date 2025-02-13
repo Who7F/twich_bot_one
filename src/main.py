@@ -32,6 +32,7 @@ async def main():
         # TODO. Add Exception handling
         print("Failed Relay Chat. Exiting.")
     print("END")
+    await asyncio.sleep(6) 
 
 
 if __name__ == "__main__":

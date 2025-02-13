@@ -1,6 +1,7 @@
 """This module is responsible for managing the chat connection and handling the messages."""
 from .utility_functions import send_message
 from .listener import listener
+import asyncio
 
 
 def handle_ping(irc, massage):
@@ -9,7 +10,7 @@ def handle_ping(irc, massage):
         irc.send("PONG :tmi.twitch.tv\n".encode('utf-8'))
 
 
-def manage_chat_connection(irc, bot_username, channel_name, commands):
+async def manage_chat_connection(irc, bot_username, channel_name, commands):
     """Manage the chat connection and handle the messages."""
     print(f"Connected to {channel_name}'s as {bot_username}")
 
@@ -19,11 +20,14 @@ def manage_chat_connection(irc, bot_username, channel_name, commands):
     send_message(irc, channel_name, start_bot)
 
     while True:
+        await asyncio.sleep(0.1)
+        print('loop')
         message = irc.recv(2048).decode('utf-8')
         handle_ping(irc, message)
+        
 
         if "PRIVMSG" in message:
-            stay_alive = listener(irc, channel_name, bot_username, message, commands)
+            stay_alive = await listener(irc, channel_name, bot_username, message, commands)
 
             if not stay_alive:
                 send_message(irc, channel_name, stop_bot)
